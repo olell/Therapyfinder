@@ -53,13 +53,21 @@ def call_therapist(therapist=None, user=None, user_error=None):
     if therapist_model is None:
         flash("Invalid request")
         return redirect(url_for("app.call"))
-    return render_template("app/call_therapist.html", therapist=therapist_model)
+    if therapist_model.user == user:
+        return render_template("app/call_therapist.html", therapist=therapist_model)
+    else:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
 
 @app.route("/therapists")
 @requires_login
 def therapists(user=None, user_error=None):
     therapists = Therapist.select().where(Therapist.user == user)
-    return render_template("app/therapists.html", therapists=therapists)
+    if therapist.user == user:
+        return render_template("app/therapists.html", therapists=therapists)
+    else:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
 
 @app.route("/therapists/editor/<int:new>", methods=["GET", "POST"])
 @app.route("/therapists/editor/<int:new>/<int:therapist>", methods=["GET", "POST"])
@@ -75,6 +83,10 @@ def therapist_editor(new=True, therapist=None, user=None, user_error=None):
         if therapist_model is None:
             flash("Invalid request")
             return redirect(url_for("app.index"))
+        if therapist_model.user != user:
+            flash("You're not allowed to see this page", "danger")
+            return redirect(url_for("index.index"))
+
 
     if request.method == "GET":
         timeslots = None
@@ -157,6 +169,11 @@ def therapist_editor(new=True, therapist=None, user=None, user_error=None):
 @requires_login
 def delete_therapist(therapist=None, user=None, user_error=None):
     therapist_model = Therapist.get_or_none(Therapist.id == therapist)
+
+    if therapist_model.user != user:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
+
     for timeslot in Timeslot.select().where(Timeslot.therapist == therapist_model):
         timeslot.delete_instance()
     if therapist_model:
@@ -170,6 +187,10 @@ def therapist_add_timeslot(therapist=None, user=None, user_error=None):
     if therapist_model is None:
         flash("Invalid request (no such therapist)")
         return redirect(url_for("app.therapist_editor", new=0, therapist=therapist))
+
+    if therapist_model.user != user:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
     
     day = request.form.get("day", None)
     if day is None:
@@ -210,6 +231,11 @@ def therapist_add_timeslot(therapist=None, user=None, user_error=None):
 @requires_login
 def remove_timeslot(timeslot=None, user=None, user_error=None):
     timeslot_model = Timeslot.get_or_none(Timeslot.id == timeslot)
+    
+    if timeslot_model.therapist.user != user:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
+
     therapist = timeslot_model.therapist.id
     timeslot_model.delete_instance()
     return redirect(url_for('app.therapist_editor', new=0, therapist=therapist))
@@ -243,6 +269,10 @@ def log_add(after=None, user=None, user_error=None):
     if therapist is None:
         flash("Invalid request")
         return redirect(url_for(after))
+
+    if therapist.user != user:
+        flash("You're not allowed to see this page", "danger")
+        return redirect(url_for("index.index"))
 
     entry = LogEntry(
         therapist = therapist,
