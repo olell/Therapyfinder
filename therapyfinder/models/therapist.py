@@ -33,6 +33,8 @@ class Therapist(peewee.Model):
 
     specialism = peewee.CharField()
 
+    comment = peewee.TextField(default="")
+
     class Meta:
         database = Database.get()
 

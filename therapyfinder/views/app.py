@@ -123,12 +123,10 @@ def therapist_editor(new=True, therapist=None, user=None, user_error=None):
         if specialism is None:
             flash("Invalid form data")
             return redirect(url_for("app.therapist_editor", new=new, therapist=therapist))
-            
+        comment = request.form.get("comment", "")
         enabled = request.form.get("enabled", None)
         if enabled is None: enabled = False
         else: enabled = True
-
-        print("Enabled: ", enabled)
         
         if new:
             therapist_model = Therapist(
@@ -142,7 +140,8 @@ def therapist_editor(new=True, therapist=None, user=None, user_error=None):
                 phone = phone,
                 mobile = mobile,
                 specialism = specialism,
-                enabled = enabled
+                enabled = enabled,
+                comment = comment
             )
             therapist_model.save()
         else:
@@ -156,7 +155,8 @@ def therapist_editor(new=True, therapist=None, user=None, user_error=None):
             therapist_model.mobile = mobile
             therapist_model.specialism = specialism
             therapist_model.enabled = enabled
-
+            therapist_model.comment = comment
+            
             therapist_model.save()
 
         return redirect(url_for("app.therapist_editor", new=0, therapist=therapist_model.id))

@@ -54,7 +54,10 @@
                 <label for="inputSpecialism" class="float-start">Specialism</label>
                 <input type="text" name="specialism" id="inputSpecialism" class="form-control mb-2" {% if not new %} value="{{ therapist.specialism }}"{% endif %} placeholder="e.g. psychotherapist">
             </div>
-
+            <div class="col col-md-12">
+                <label for="commentTextarea" class="form-label">Comment</label>
+                <textarea name="comment" class="form-control" id="commentTextarea" rows="3">{% if not new %}{{ therapist.comment }}{% endif %}</textarea>
+            </div>
             <div class="col col-md-12 form-check">
                 <input class="form-check-input" type="checkbox" value="" name="enabled" id="enabledCheckbox" {% if new or therapist.enabled %} checked {% endif %}>
                 <label class="form-check-label" for="enabledCheckbox">
