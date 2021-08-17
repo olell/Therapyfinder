@@ -63,11 +63,7 @@ def call_therapist(therapist=None, user=None, user_error=None):
 @requires_login
 def therapists(user=None, user_error=None):
     therapists = Therapist.select().where(Therapist.user == user)
-    if therapist.user == user:
-        return render_template("app/therapists.html", therapists=therapists)
-    else:
-        flash("You're not allowed to see this page", "danger")
-        return redirect(url_for("index.index"))
+    return render_template("app/therapists.html", therapists=therapists)
 
 @app.route("/therapists/editor/<int:new>", methods=["GET", "POST"])
 @app.route("/therapists/editor/<int:new>/<int:therapist>", methods=["GET", "POST"])
