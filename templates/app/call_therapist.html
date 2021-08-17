@@ -12,6 +12,8 @@
         {% if therapist.mobile %}
             <a href="tel:{{ therapist.mobile }}" class="btn btn-lg btn-primary mt-3">Call Mobile ({{ therapist.mobile }})</a>
         {% endif %}
+        
+        <div class="mt-5"><b>Comment: </b><pre>{{ therapist.comment }}</pre></div>
 
         <h4 class="mt-5">Add log entry</h2>
         <form action="{{ url_for('app.log_add', after='app.call') }}" method="POST">
