@@ -1,0 +1,39 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+<div class="container mt-3">
+    <div class="column col-md-12">
+        <h3>Call "{{ therapist.title }} <b>{{ therapist.name }}</b>"</h3>
+        <a href="{{ url_for('app.call') }}" class="btn btn-md btn-primary">Back</a>
+        <a href="{{ url_for('app.therapist_editor', new=0, therapist=therapist.id) }}" class="btn btn-md btn-primary">Edit</a> <br>
+
+        <a href="tel:{{ therapist.phone }}" class="btn btn-lg btn-primary mt-3">Call Phone ({{ therapist.phone }})</a>
+        {% if therapist.mobile %}
+            <a href="tel:{{ therapist.mobile }}" class="btn btn-lg btn-primary mt-3">Call Mobile ({{ therapist.mobile }})</a>
+        {% endif %}
+
+        <h4 class="mt-5">Add log entry</h2>
+        <form action="{{ url_for('app.log_add', after='app.call') }}" method="POST">
+            <label for="resultSelect" class="float-start">Result</label>
+            <select class="form-select mb-2" name="result" id="resultSelect" aria-label="Call Result">
+                <option value="0">Success</option>
+                <option value="1">Call again</option>
+                <option value="2">Answering machine, left a message</option>
+                <option value="3">Answering machine, left no message</option>
+                <option value="4">Timeslots changed</option>
+                <option value="5">Line busy</option>
+                <option value="6" selected>No Answer</option>
+                <option value="7">No success (other)</option>
+            </select>
+            <div class="mb-2">
+                <label for="commentTextarea" class="form-label">Comment</label>
+                <textarea name="comment" class="form-control" id="commentTextarea" rows="3"></textarea>
+            </div>
+            <input type="hidden" value="{{ therapist.id }}" name="therapist">
+            <input type="submit" value="Add log entry" class="btn btn-md btn-primary float-end">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

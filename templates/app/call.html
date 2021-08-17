@@ -1,0 +1,36 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+<div class="container mt-3">
+    <div class="column col-md-12">
+        <h3>Available Therapists</h3>
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Time</th>
+                <th scope="col">Specialism</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+                {% for slot in timeslots %}
+                <tr href="/">
+                    {% if slot.therapist.custom_id is none %}
+                        <th scope="row">{{ slot.therapist.id }}</th>
+                    {% else %}
+                        <th scope="row">{{ slot.therapist.custom_id }}</th>
+                    {% endif %}
+                    <td>{{ slot.therapist.title }} <b>{{ slot.therapist.name}}</b></td>
+                    <td>{{ "%02d:%02d" % (slot.start_hour, slot.start_minute) }} - {{ "%02d:%02d" % (slot.end_hour, slot.end_minute) }}</td>
+                    <td>{{ slot.therapist.specialism }}</td>
+                    <td><a href="{{ url_for('app.call_therapist', therapist=slot.therapist.id) }}">Call</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

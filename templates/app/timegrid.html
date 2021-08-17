@@ -1,0 +1,54 @@
+<!-- This file is designated to be printed -->
+
+<html>
+    <head>
+        <title>Therapyfinder Timegrid</title>
+        <style>
+            .timegrid-table {
+                width: 98vw;
+                border: 1px solid black;
+                text-align: center;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            .timegrid-table td {
+                height: 10vh;
+                border: 1px solid black;
+            }
+            .timegrid-table th {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+
+        <table class="timegrid-table">
+            <thead>
+                <th></th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+            </thead>
+            <tbody>
+                {% for timeslot in timeslots %}
+                <tr>
+                    <td>{{ timeslot.time }}</td>
+                    {% for day in timeslot.days %}
+                        <td>
+                            {% for therapist in day %}
+                                {{ therapist.custom_id }},
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </body>
+</html>

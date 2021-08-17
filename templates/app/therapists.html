@@ -1,0 +1,38 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+<div class="container mt-3">
+    <div class="column col-md-12">
+        <h3>Therapists</h3>
+
+        <a class="btn btn-md btn-primary" href="{{ url_for('app.index') }}">Back</a>
+        <a href="{{ url_for('app.therapist_editor', new=1) }}" class="btn btn-md btn-primary">Add therapist</a>
+        <a href="{{ url_for('app.timegrid') }}" class="btn btn-md btn-primary float-end">View Timegrid</a>
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Specialism</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+                {% for therapist in therapists %}
+                <tr href="/">
+                    {% if therapist.custom_id is none %}
+                        <th scope="row">{{ therapist.id }}</th>
+                    {% else %}
+                        <th scope="row">{{ therapist.custom_id }}</th>
+                    {% endif %}
+                    <td>{{ therapist.title }} <b>{{ therapist.name}}</b></td>
+                    <td>{{ therapist.specialism }}</td>
+                    <td><a href="{{ url_for('app.therapist_editor', new=0, therapist=therapist.id) }}">Edit</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

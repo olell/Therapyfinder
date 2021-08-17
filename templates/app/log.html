@@ -1,0 +1,61 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+<div class="container mt-3">
+    <div class="column col-md-12">
+        <h3>Call Log</h3>
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <th scope="col">Time</th>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Result</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+                {% for log in entries %}
+                <tr href="/">
+                    <td>{{ log.time.strftime("%d.%m.%Y %H:%M") }}</td>
+                    {% if log.therapist.custom_id is none %}
+                        <th scope="row">{{ log.therapist.id }}</th>
+                    {% else %}
+                        <th scope="row">{{ log.therapist.custom_id }}</th>
+                    {% endif %}
+                    <td>{{ log.therapist.title }} <b>{{ log.therapist.name}}</b></td>
+                    <td>{{ result_texts[log.result] }}</td>
+                    <td><a onclick="show_comment('{{ log.comment }}')" data-bs-toggle="modal" data-bs-target="#viewCommentModal" href="#">View comment</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="viewCommentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewCommentModalLabel">Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <span id="commentText"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function show_comment(comment) {
+        $("#commentText").text(comment)
+    }
+</script>
+{% endblock %}

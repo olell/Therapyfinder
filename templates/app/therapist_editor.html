@@ -1,0 +1,158 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+<div class="container mt-3">
+    <div class="row col-md-12">
+        {% if not new %}
+            <h3>Edit {{ therapist.title }} {{ therapist.name }}</h3>
+        {% else %}
+            <h3>Add Therapist</h3>
+        {% endif %}
+            
+        <div class="col col-md-12 mb-2">
+            <a class="btn btn-md btn-primary" href="{{ url_for('app.therapists') }}">Back</a>
+            {% if not new %}
+                <a class="btn btn-md btn-danger" href="{{ url_for('app.delete_therapist', therapist=therapist.id) }}">Delete</a>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            <div class="col col-md-12">
+                <label for="inputCustomID" class="float-start">ID</label>
+                <input type="text" name="custom_id" id="inputCustomID" class="form-control mb-2" {% if not new %} hi value="{{ therapist.custom_id }}"{% endif %} placeholder="#" required autofocus>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputTitle" class="float-start">Title</label>
+                <input type="text" name="title" id="inputTitle" class="form-control mb-2" {% if not new %} value="{{ therapist.title }}"{% endif %} placeholder="e.g. Dipl.-Psych." required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputName" class="float-start">Name</label>
+                <input type="text" name="name" id="inputName" class="form-control mb-2" {% if not new %} value="{{ therapist.name }}"{% endif %} required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputPlz" class="float-start">PLZ</label>
+                <input type="text" name="plz" id="inputPlz" class="form-control mb-2" {% if not new %} value="{{ therapist.plz }}"{% endif %} required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputCity" class="float-start">City</label>
+                <input type="text" name="city" id="inputCity" class="form-control mb-2" {% if not new %} value="{{ therapist.city }}"{% endif %} required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputStreet" class="float-start">Street, Number</label>
+                <input type="text" name="street" id="inputStreet" class="form-control mb-2" {% if not new %} value="{{ therapist.street }}"{% endif %} required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputPhone" class="float-start">Phone</label>
+                <input type="text" name="phone" id="inputPhone" class="form-control mb-2" {% if not new %} value="{{ therapist.phone }}"{% endif %} required>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputMobilephone" class="float-start">Second Phone / Mobile</label>
+                <input type="text" name="mobile" id="inputMobilephone" class="form-control mb-2" {% if not new %} value="{{ therapist.mobile }}"{% endif %}>
+            </div>
+            <div class="col col-md-12">
+                <label for="inputSpecialism" class="float-start">Specialism</label>
+                <input type="text" name="specialism" id="inputSpecialism" class="form-control mb-2" {% if not new %} value="{{ therapist.specialism }}"{% endif %} placeholder="e.g. psychotherapist">
+            </div>
+
+            <div class="col col-md-12 form-check">
+                <input class="form-check-input" type="checkbox" value="" name="enabled" id="enabledCheckbox" {% if new or therapist.enabled %} checked {% endif %}>
+                <label class="form-check-label" for="enabledCheckbox">
+                    Enabled
+                </label>
+            </div>
+
+            <input type="submit" class="btn btn-md btn-primary float-end" value="Save!">
+        </form>
+        <hr class="mt-1">
+    </div>
+    <div class="col col-md-12">
+        <h3>Timeslots</h3>
+        <span>{% if new %}(Please save to add new timeslots){% endif %}</span>
+        {% if not new %}
+        <button type="button" class="btn btn-md btn-primary" data-bs-toggle="modal" data-bs-target="#addTimeslotModal">
+            Add timeslot
+        </button>
+
+        <div class="modal fade" id="addTimeslotModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTimeslotModalLabel">Add Timeslot</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ url_for('app.therapist_add_timeslot', therapist=therapist.id) }}" method="POST">
+                        <div class="modal-body">
+                            <label for="weekdaySelect" class="float-start">Weekday</label>
+                            <select class="form-select" name="day" id="weekdaySelect" aria-label="Weekday">
+                                <option value="0" selected>Monday</option>
+                                <option value="1">Tuesday</option>
+                                <option value="2">Wednesday</option>
+                                <option value="3">Thursday</option>
+                                <option value="4">Friday</option>
+                                <option value="5">Saturday</option>
+                                <option value="6">Sunday</option>
+                            </select>
+                            <label for="startHour" class="float-start">Start Time</label>
+                            <div class="input-group mb-2">
+                                <input type="number" name="start_hour" id="startHour" min=0 max=23 class="form-control" required>
+                                <span class="input-group-text">:</span>
+                                <input type="number" name="start_minute" id="startMinute" min=0 max=59 class="form-control" required>
+                            </div>
+                            <label for="endHour" class="float-start">End Time</label>
+                            <div class="input-group mb-2">
+                                <input type="number" name="end_hour" id="endHour" min=0 max=23 class="form-control" required>
+                                <span class="input-group-text">:</span>
+                                <input type="number" name="end_minute" id="endMinute" min=0 max=59 class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" data-bs-dismiss="modal" value="Add">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <table class="table">
+            <thead>
+                <th scope="col">Day</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+                {% if not new %}
+                {% for timeslot in timeslots %}
+                <tr>
+                    <th scope="col">{{ weekdays[timeslot.weekday] }}</th>
+                    <td>{{ '%02d' % timeslot.start_hour }}:{{ '%02d' % timeslot.start_minute }}</td>
+                    <td>{{ '%02d' % timeslot.end_hour }}:{{ '%02d' % timeslot.end_minute }}</td>
+                    <td><a href="#"  data-bs-toggle="modal" data-bs-target="#addTimeslotModal" onclick="fill_timeslot_modal({{ timeslot.weekday }}, {{ timeslot.start_hour }}, {{ timeslot.start_minute }}, {{ timeslot.end_hour }}, {{ timeslot.end_minute }});">Copy</a>
+                        <a class="ms-4" href="{{ url_for('app.remove_timeslot', timeslot=timeslot.id) }}" onclick="">Remove</a></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    function fill_timeslot_modal(weekday, start_hour, start_minute, end_hour, end_minute) {
+        $("#weekdaySelect").val(weekday);
+        $("#startHour").val(start_hour);
+        $("#startMinute").val(start_minute);
+        $("#endHour").val(end_hour);
+        $("#endMinute").val(end_minute);
+
+    }
+</script>
+
+{% endblock %}
